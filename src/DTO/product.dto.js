@@ -9,6 +9,7 @@ class ProductDTO {
             stock: product.stock,
             category: product.category,
             status: product.status,
+            owner: product.owner
         }
         return productParams
     }

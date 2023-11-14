@@ -15,21 +15,23 @@ import {
   productsView,
   registerView,
   resetPasswordView,
+  recoverPassword
 } from "../controllers/view.controller.js";
 
 class ViewRouterClass extends RouterClass {
   init() {
     this.get("/", passportCallRedirect("jwt"), loginView);
     this.get("/login", passportCallRedirect("jwt"), loginView);
-    this.get("/resetpassword", resetPasswordView);
+    this.get("/resetpassword/:idurl", resetPasswordView);
+    this.get("/recoverpassword", recoverPassword);
     this.get("/register", passportCallRedirect("jwt"), registerView);
-    this.get("/perfil", passportCall("jwt"), authorizationRole(["user", "admin"]), perfilView );
-    this.get("/products", passportCall("jwt"), authorizationRole(["user", "admin"]), productsView);
-    this.get("/product/:pid", passportCall("jwt"), authorizationRole(["user", "admin"]), productDetailView);
-    this.get("/newproduct", passportCall("jwt"), authorizationRole(["admin"]), newProductView);
-    this.get("/carts", passportCall("jwt"), authorizationRole(["user", "admin"]), cartView);
+    this.get("/perfil", passportCall("jwt"), authorizationRole(["user", "admin","premium"]), perfilView );
+    this.get("/products", passportCall("jwt"), authorizationRole(["user", "admin","premium"]), productsView);
+    this.get("/product/:pid", passportCall("jwt"), authorizationRole(["user", "admin","premium"]), productDetailView);
+    this.get("/newproduct", passportCall("jwt"), authorizationRole(["admin","premium"]), newProductView);
+    this.get("/carts", passportCall("jwt"), authorizationRole(["user", "admin","premium"]), cartView);
     this.get("/logout", logoutView);
-    this.get("/chat", passportCall("jwt"), authorizationRole(["user"]), chatView);
+    this.get("/chat", passportCall("jwt"), authorizationRole(["user","premium"]), chatView);
   }
 }
 

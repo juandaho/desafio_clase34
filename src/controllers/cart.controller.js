@@ -60,7 +60,14 @@ export const updateProductInCart = async (request, response) => {
 };
 
 export const addProductInCart = async (request, response) => {
+  const { user } = request.user;
   const { cid, pid } = request.params;
+  if(user.role === "premium") { 
+    let res = await PRODUCT_SERVICES.getProduct(pid);
+    if(res.owner.toString() === user._id) {
+      return response.status(401).send({error:'You do not have permissions to perform this action'})
+    }
+  }
   let res = await CART_SERVICES.addProductInCart(cid, pid);
   if (res?.error) {
     response.status(400).send({ ...res })

@@ -26,11 +26,27 @@ import { MESSAGE_SERVICES } from "./services/servicesManager.js";
 import dotenv from 'dotenv';
 // import errorHandler from './middleware/errors/index.js'
 import { addLogger } from "./middleware/logger.js";
+import swaggerJsdoc from 'swagger-jsdoc'
+import swaggerUiExpress from 'swagger-ui-express'
 
 dotenv.config();
 // MongoDbConnection.getConnection();
 
 const app = express();
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info:{
+      title: 'E commerce',
+      description: 'E-Commerce de productos de indumentaria de Leandro Fernandez'
+    }
+  },
+  apis: [`${__dirname}/docs/*/*.yaml`]
+}
+
+const specs = swaggerJsdoc(swaggerOptions)
+app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 const viewsRouter = new ViewsRouterClass();
 const cartRouter = new CartRouterClass();

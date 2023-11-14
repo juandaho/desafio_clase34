@@ -1,4 +1,4 @@
-import { PRODUCT_SERVICES, CART_SERVICES } from "../services/servicesManager.js";
+import { PRODUCT_SERVICES, CART_SERVICES, SESSION_SERVICES } from "../services/servicesManager.js";
 
 export const loginView = async (request, response) => {
   response.render("user/login", {
@@ -9,8 +9,32 @@ export const loginView = async (request, response) => {
 };
 
 export const resetPasswordView = async (request, response) => {
+  let { idurl } = request.params
+  let result = await SESSION_SERVICES.checkResetUrl(idurl);
+  if(!result?.email) {
+    response.redirect("/recoverpassword")
+    return;
+  }
+  let create = new Date(result.recover_password.createTime);
+  let now = new Date();
+  let minutes = (now.getTime()-create.getTime()) / 1000 / 60;
+  if(minutes > 60) {
+    await SESSION_SERVICES.resetRecoverPassword(result.email)
+    response.redirect("/login")
+    return;
+  }
   response.render("user/resetpassword", {
     title: "Reset Password",
+    style: "home",
+    logued: false,
+    email: result.email,
+    idurl: result.recover_password.id_url
+  });
+};
+
+export const recoverPassword = async (request, response) => {
+  response.render("user/recoverpassword", {
+    title: "Recover Password",
     style: "home",
     logued: false,
   });
@@ -27,11 +51,12 @@ export const registerView = async (request, response) => {
 
 export const perfilView = async (request, response) => {
   const { user } = request.user;
+  console.log(user);
   response.render("user/perfil", {
     title: "Registro",
     style: "home",
     user,
-    role: user.role === 'admin',
+    role: user.role === 'admin' || user.role === 'premium',
     logued: true,
   });
 };
@@ -60,7 +85,7 @@ export const productsView = async (request, response) => {
     sort,
     query,
     user,
-    role: user.role === 'admin',
+    role: user.role === 'admin' || user.role === 'premium',
     cart: user.cart,
     logued: true,
   });
@@ -77,7 +102,7 @@ export const productDetailView = async (request, response) => {
     title: `Product ${product.title}`,
     style: "home",
     logued: true,
-    role: user.role === 'admin',
+    role: user.role === 'admin' || user.role === 'premium',
     cart: user.cart,
   });
 };
@@ -88,7 +113,7 @@ export const newProductView = async (request, response) => {
     title: "Products",
     style: "home",
     logued: true,
-    role: user.role,
+    role: user.role === 'admin' || user.role === 'premium',
   });
 };
 
@@ -102,8 +127,8 @@ export const cartView = async (request, response) => {
     products,
     _id,
     display: products.length > 0 ? true : false,
+    
     logued: true,
-    role: user.role === 'admin'
   });
 };
 

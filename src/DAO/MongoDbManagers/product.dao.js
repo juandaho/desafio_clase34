@@ -66,7 +66,7 @@ export default class ProductManagerDB {
   }
 
   #checkMandatoryFields(fields) {
-    if (Object.keys(fields).length !== 8) return true;
+    if (Object.keys(fields).length !== 9) return true;
     return this.#checkIfEmptyField(fields);
   }
 

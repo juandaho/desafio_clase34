@@ -13,14 +13,14 @@ import { authorizationRole, passportCall } from "../middleware/session.js";
 class ProductRouterClass extends RouterClass {
   init() {
     this.get("/mocking-products", getMocksProducts);
-    this.get("/", passportCall("jwt"), authorizationRole(["user", "admin"]), getProducts);
-    this.post("/", passportCall("jwt"), authorizationRole(["admin"]), uploader.array("thumbnails"), saveProduct);
-    // this.post("/", saveProduct);
-    this.get("/:pid", passportCall("jwt"), authorizationRole(["user", "admin"]), getProduct);
-    this.delete("/:pid", passportCall("jwt"), authorizationRole(["admin"]), deleteProduct);
-    this.put("/:pid", passportCall("jwt"), authorizationRole(["admin"]), updateProduct);
+    this.get("/", passportCall("jwt"), authorizationRole(["user", "admin", "premium"]), getProducts);
+    this.post("/", passportCall("jwt"), authorizationRole(["admin", "premium"]), uploader.array("thumbnails"), saveProduct);
+
+    this.get("/:pid", passportCall("jwt"), authorizationRole(["user", "admin", "premium"]), getProduct);
+    this.delete("/:pid", passportCall("jwt"), authorizationRole(["admin", "premium"]), deleteProduct);
+    this.put("/:pid", passportCall("jwt"), authorizationRole(["admin", "premium"]), updateProduct);
   }
 }
 export default ProductRouterClass;
 
-// export default router;
+

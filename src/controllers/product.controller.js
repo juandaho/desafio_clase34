@@ -1,6 +1,4 @@
-// import CustomError from "../middleware/errors/CustomError.js";
-// import { generateProductErrorAttributes } from "../middleware/errors/info.js";
-// import EErrors from '../middleware/errors/enum.js'
+
 import { PRODUCT_SERVICES } from "../services/servicesManager.js";
 import { generateProduct } from "../utils.js";
 
@@ -32,48 +30,35 @@ export const getProduct = async (request, response) => {
 };
 
 export const saveProduct = async (request, response) => {
+  const { user } = request.user;
   const io = request.app.get("socketio");
   const { files, body } = request;
   let product = { ...body, status: true };
   let thumbnails = files.map((file) => file.originalname);
   product.thumbnails = thumbnails || [];
+  product.owner = user._id;
   let res = await PRODUCT_SERVICES.saveProduct(product);
   let res2 = await PRODUCT_SERVICES.getProducts();
   response.send(res);
   io.emit("products", res2);
 };
 
-// export const saveProduct = async (request, response) => {
-//   const { body } = request;
-//   let product = { ...body, status: true };
-//   if (
-//     !product.title ||
-//     !product.description ||
-//     !product.price ||
-//     !product.code ||
-//     !product.status ||
-//     !product.stock ||
-//     !product.category
-//   ) {
-//     throw CustomError.createError({
-//       name: "TYPE_ERROR",
-//       cause: generateProductErrorAttributes(body),
-//       message: "Error trying to create the product.",
-//       code: EErrors.INVALID_TYPE_ERROR
-//     });
-//   }
-//     product.thumbnails = [];
-//     let res = await PRODUCT_SERVICES.saveProduct(product);
-//     response.send(res);
-// };
+
 
 export const deleteProduct = async (request, response) => {
+  const { user } = request.user;
+  if(user.role === "premium") { 
+    let res = await PRODUCT_SERVICES.getProduct(pid);
+    if(res.owner.toString() !== user._id) {
+      return response.status(401).send({ error: 'You do not have permissions to perform this action'})
+    }
+  }
   let { pid } = request.params;
-  const io = request.app.get("socketio");
+
   let res = await PRODUCT_SERVICES.deleteProduct(pid);
-  let res2 = await PRODUCT_SERVICES.getProducts();
+  
   response.send(res);
-  io.emit("products", res2);
+  
 };
 
 export const updateProduct = async (request, response) => {

@@ -13,12 +13,12 @@ import {
 
 class CartRouterClass extends RouterClass {
   init() {
-    this.get("/:cid?", passportCall("jwt"), getCart);
     this.post("/", passportCall("jwt"), createCart);
-    this.post("/:cid/products/:pid", passportCall("jwt"), authorizationRole(["user"]), addProductInCart);
-    this.delete("/:cid/products/:pid", passportCall("jwt"), deleteProductInCart);
-    this.delete("/:cid/", passportCall("jwt"), deleteCart);
+    this.get("/:cid?", passportCall("jwt"), getCart);
     this.put("/:cid", passportCall("jwt"), updateCart);
+    this.delete("/:cid/", passportCall("jwt"), deleteCart);
+    this.post("/:cid/products/:pid", passportCall("jwt"), authorizationRole(["user", "premium"]), addProductInCart);
+    this.delete("/:cid/products/:pid", passportCall("jwt"), deleteProductInCart);
     this.put("/:cid/products/:pid", passportCall("jwt"), updateProductInCart);
     this.post("/:cid/purchase", passportCall("jwt"), closeCart);
   }

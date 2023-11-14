@@ -17,4 +17,21 @@ export default class UserRepository {
   async resetPassword({ email, newpassword }) {
     return await this.DAO.updatePassword({ email, newpassword });
   }
+
+  async recoverPassword(user) {
+    // console.log('USER_REPOSITORY=>',user);
+    return await this.DAO.recoverPassword(user)
+  }
+
+  async checkResetUrl(idurl) {
+    return await this.DAO.checkResetUrl(idurl)
+  }
+
+  async resetRecoverPassword(email) {
+    return await this.DAO.resetRecoverPassword(email);
+  }
+
+  async changeRole(uid) {
+    return await this.DAO.changeRole(uid);
+  }
 }

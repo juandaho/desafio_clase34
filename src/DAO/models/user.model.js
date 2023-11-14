@@ -13,6 +13,10 @@ const userSchema = new Schema({
     ref: "carts",
   },
   role: { type: String, default: "user" },
+  recover_password: {
+    id_url: {type: String},
+    createTime: {type: String}
+  }
 });
 
 userSchema.pre('findOne', function(){

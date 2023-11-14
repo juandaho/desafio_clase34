@@ -5,4 +5,8 @@ export default class SessionServices {
   saveUser = async (user) => await USER_REPOSITORY.register(user);
   changePassword = async ({ email, newpassword }) =>
     await USER_REPOSITORY.resetPassword({ email, newpassword });
+  recoverPassword = async (user) => await USER_REPOSITORY.recoverPassword(user)
+  checkResetUrl = async (idurl) => await USER_REPOSITORY.checkResetUrl(idurl)
+  resetRecoverPassword = async (email) => await USER_REPOSITORY.resetRecoverPassword(email)
+  changeRole = async (uid) => await USER_REPOSITORY.changeRole(uid)
 }

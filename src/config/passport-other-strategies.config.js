@@ -10,7 +10,7 @@ const LocalStrategy = local.Strategy;
 config();
 
 const initializePassport = () => {
-  // ! PASSPORT-LOCAL STRATEGY.
+
   passport.use(
     "register",
     new LocalStrategy(
@@ -55,7 +55,7 @@ const initializePassport = () => {
     )
   );
 
-  // ! PASSPORT-GITHUB
+
   passport.use(
     "github",
     new GitHubStrategy(
@@ -87,7 +87,7 @@ const initializePassport = () => {
     )
   );
 
-  // ! PASSPORT USER SERIALIZE-DESERIALIZE.
+
   passport.serializeUser((user, done) => {
     done(null, user._id);
   });
